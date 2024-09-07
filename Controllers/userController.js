@@ -87,13 +87,12 @@ userRouter.post('/add-category' , veriftyUserToken , addCategory)
             const incomeModel = new IncomeModel({
                 amount : amount,
                 description : description,
-                userId : userId,
-                isIncome : isIncome,
-                budgetLimit : budgetLimit
+                category : category,
+            
             })
-            const result = await catModel.save()
+            const result = await incomeModel.save()
             if(result){
-                return res.status(200).json({success : true , message : "Category added successfully"})
+                return res.status(200).json({success : true , message : "Income added successfully"})
             }
         }
     } catch (error) {
@@ -154,5 +153,6 @@ module.exports = {
     register,
     verifyUser,
     addCategory,
-    getGraphData
+    getGraphData,
+    addIncome
 }

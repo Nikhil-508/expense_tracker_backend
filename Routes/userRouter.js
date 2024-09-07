@@ -1,5 +1,5 @@
 const userRouter = require('express').Router()
-const { login , register, verifyUser, addCategory, getGraphData } = require('../Controllers/userController')
+const { login , register, verifyUser, addCategory, getGraphData, addIncome } = require('../Controllers/userController')
 const { veriftyUserToken } = require('../Middlewares/Auth')
 
 
