@@ -75,31 +75,7 @@ const login = async (req , res , next) => {
     }
 }
 
-const addIncome = async(req, res, next) => {
-    try {
-        const {amount, description, category} =req?.body
-        const userId = req?.userId
-userRouter.post('/add-category' , veriftyUserToken , addCategory)
-        const income = await IncomeModel.find({amount : amount, description : description , category : category, userId : userId})
-        if(income.length > 0){
-            return res.status(200).json({message: "Income already exist",success: false})
-        }else{
-            const incomeModel = new IncomeModel({
-                amount : amount,
-                description : description,
-                category : category,
-            
-            })
-            const result = await incomeModel.save()
-            if(result){
-                return res.status(200).json({success : true , message : "Income added successfully"})
-            }
-        }
-    } catch (error) {
-        console.error(error)
-        
-    }
-}
+
 
 const addCategory = async (req , res , next) => {
     try {
@@ -130,8 +106,39 @@ const addCategory = async (req , res , next) => {
 const getAllCategories = async (req , res , next) => {
     try {
         const {isIncome} = req.body
+        const {userId} = req.userId
         const catData = await CategoryModel.find({userId , isIncome})
+        if(catData){
+            res.status(200).json({success : true, message:  "got all categories",catData})
+        }
     } catch (error) {
+        console.log(error);
+    }
+}
+
+const addIncome = async(req, res, next) => {
+    try {
+        const {amount, description, category} =req?.body
+        const userId = req?.userId
+        const userCategory = await CategoryModel.find({userId : userId,isIncome : true})
+        const income = await IncomeModel.find({amount : amount, description : description , category : category, userId : userId})
+        if(income.length > 0) {
+            return res.status(200).json({success : false , message : "income already exists"})
+        } else {
+            const incomeModel = new IncomeModel({
+                amount : amount,
+                description : description,
+                category : category,
+            
+            })
+        
+            const result = await incomeModel.save()
+            if(result){
+                return res.status(200).json({success : true , message : "Income added successfully",userCategory})
+        }
+      }
+    } catch (error) {
+        console.error(error)
         
     }
 }
@@ -153,6 +160,7 @@ module.exports = {
     register,
     verifyUser,
     addCategory,
+    getAllCategories,
     getGraphData,
     addIncome
 }
